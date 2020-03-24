@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN 2.0//EN" "https://www.springframework.org/dtd/spring-beans-2.0.dtd">
+
+<beans>
+    <!--
+        1. 将dao对象 注入到Spring容器中:
+            通过【反射】创建对象，com.aistar.dao.impl.ProductDaoImpl.class.newInstance(); ==ProductDaoImpl需要有无参构造函数
+
+
+            ProductDao productDao = com.aistar.dao.impl.ProductDaoImpl.class.newInstance();
+
+        2.bean 对象的生命周期
+            scope="singleton"【默认值】:  bean 的生命周期完全交给容器管理
+                                        在spring容器实例化的时候，就实例化该bean对象了，并且初始化initial
+                                        在spring容器关闭的时候，该bean对象也释放资源，结束生命周期
+
+           scope = "prototype"  bean对象的生命周期不完全由spring管理
+                                在getBean的时候，才会实例化初始化该bean对象
+                                在spring容器关闭的时候，不会消亡，bean对象不再使用，JVM中GC回收释放资源
+
+    -->
+    <bean id="productDaoImpl" class="com.aistar.dao.impl.ProductDaoImpl"
+    init-method="myInit" destroy-method="myDestroy"></bean>
+
+    <!--
+    依赖注入 Dependency Injection(DI)
+       （1） 组件要注入到spring容器中
+        （2）模块与模块之间依赖，也是由spring容器来管理
+
+    注入service对象
+        依赖注入的方式
+            （1）setter注入
+            （2）构造器注入
+    -->
+    <!-- <bean id="productServiceImpl" class="com.aistar.service.impl.ProductServiceImpl">
+         &lt;!&ndash;service 依赖于两个属性的setter方法  name, productDao&ndash;&gt;
+         <property name="name" value="tom"/>
+         <property name="productDao" ref="productDaoImpl"  />
+
+     </bean>-->
+
+    <!--（2）构造器注入
+     public ProductServiceImpl(String name, ProductDao productDao ) {
+     -->
+    <bean id="productServiceImpl" class="com.aistar.service.impl.ProductServiceImpl">
+        <constructor-arg ref="productDaoImpl" index="1"></constructor-arg>
+        <constructor-arg ref="tom" index="0"></constructor-arg>
+    </bean>
+
+</beans>
